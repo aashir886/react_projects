@@ -40,4 +40,4 @@ jobs:
         run: sudo npm install -g surge
 
       - name: deploying on surge
-        run: surge ./build http://projects-react-native.surge.sh/ --token ${{ secrets.SURGE_TOKEN }}
+        run: surge ./build http://react_projects.surge.sh/ --token ${{ secrets.SURGE_TOKEN }}
