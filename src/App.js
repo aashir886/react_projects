@@ -1,58 +1,38 @@
-import React, { Component } from 'react'
-import Navbar from './components/Layout/Navbar'
-import Users from './components/users/Users'
-import Search from './components/users/Search'
-import Alert from './components/Layout/Alert'
-import axios from 'axios'
+import React, { Fragment } from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Navbar from './Components/layout/Navbar';
+import Home from './Components/pages/Home'
+import Alert from './Components/layout/Alert'
+import About from './Components/pages/About'
+import User from './Components/users/user'
+import GithubState from './context/github/GithubState'
+import AlertState from './context/alert/AlertState'
+import NotFound from './Components/pages/NotFound'
 import './App.css';
 
-class App extends Component {
-  state = {
-    users: [],
-    alert: null,
-    loading: false
-  }
 
-  // this function is called from the search component by passing props
-  searchUsers = async (text) => {
-    this.setState( { loading: true } );
-    const res = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`)
-    this.setState( { loading: false, users: res.data.items  } );
-  }
 
-  // this func is called from the search component to the clear users
-  clearUsers = () => this.setState({ users: [], loading: false })
-
-  // this func is called from the serch component to raise an alert for empty text field
-  setAlert = (msg, type) => {
-    this.setState({ alert: { msg: msg, type: type } })
-    // remove the alert msg after 5s
-    setTimeout(() => this.setState({ alert: null }), 5000)
-  }
-
-  clearAlert = () => {
-    this.setState({ alert: null })
-  }
-
-  render() {
-    const { users, loading } = this.state;
+const App = () => {
     return (
-      <div className="App">
-       <Navbar  />
-       <div className="container" >
-       <Alert alert={ this.state.alert } />
-       <Search searchUsers={ this.searchUsers } 
-               clearUsers={ this.clearUsers } 
-               showClear={ users.length > 0 ? true : false }
-               setAlert={  this.setAlert}
-               showAlert={ this.state.alert !== null ? true : false  }
-               clearAlert={ this.clearAlert  }   
-        />
-       <Users loading={ loading } users={ users } />
-       </div>
-      </div>
-    );
+      <GithubState>
+        <AlertState>
+            <Router>
+              <div className="App">
+                <Navbar  />
+                <div className="container">
+                  <Alert/>
+                  <Switch>
+                    <Route exact path='/' component={Home} />
+                    <Route exact path='/about' component={ About } />
+                    <Route exact path='/user/:login' component={ User } />
+                    <Route component={NotFound} />
+                  </Switch> 
+                </div>
+              </div>
+            </Router>
+          </AlertState>
+      </GithubState>
+    )
   }
-}
 
 export default App
