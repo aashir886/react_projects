@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './Components/layout/Navbar';
 import Home from './Components/pages/Home'
